@@ -20,22 +20,23 @@ delta_1 = paramsOut_Merton(5);
 
 %% GMM
 medel = mean(XA);
-XA = XA-mean(XA);
-data = [yN x]; % vad ska egentligen yN vara
-restr = 2;
-w = eye(restr);
+XA = XA-mean(XA);  % vad ska egentligen yN vara
+
 beta0 = 1;
 beta1 = 1;
-theta0 = [beta0, beta1];
+a = 1;
+b = 1;
+c = 1;
+theta0 = [beta0, beta1, a, b, c];
 iterations = 1;
-W = eye(5,5);
-GMM1 = @(theta)GMM(theta,data,w)
+W = eye(4,4);
+GMM1 = @(theta)GMM2(theta0,XA,W)
 theta_hat = fminunc(GMM1,theta0);
 
 for i = 1:iterations
-    [m, w_new] = GMM(theta0,data,w)
+    [m, w_new] = GMM2(theta0,XA,W)
     w = w_new;
-    GMM1 = @(theta)GMM(theta,data,w)
+    GMM1 = @(theta)GMM2(theta,XA,W)
     theta_hat = fminunc(GMM1,theta0)
 end
 
